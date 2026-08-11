@@ -113,6 +113,7 @@ python -m pytest
 ```
 
 测试覆盖 calculator 安全计算、RAG 检索、time 时区解析、weather API 解析、working memory、router、recovery 和 fake graph 集成流程。
+GitHub Actions 会在 Python 3.11 和 3.12 上自动运行该测试套件。
 
 ## Dify Comparison
 
