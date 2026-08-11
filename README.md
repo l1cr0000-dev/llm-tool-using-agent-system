@@ -144,15 +144,6 @@ TAVILY_API_KEY=your-tavily-api-key
 - [评测方法与误差分析](docs/evaluation.md)
 - [离线旅行演示](docs/travel-demo.md)
 
-## 简历表述（可直接使用）
-
-**中文**
-
-> 设计并实现基于 LangGraph 的旅游计划编排 Agent，将出发地、目的地、预算与偏好拆解为交通报价、目的地 RAG 和可选 Web Search 调用；通过 Function Calling 约束规划输出，生成逐日景点、餐厅与人均预算。实现 working memory、query rewrite、retry 与语义安全 fallback，并提供 FastAPI + SQLite 的计划创建与历史查询接口；22 项自动化测试在 Python 3.11/3.12 CI 中通过。
-
-**English**
-
-> Built a LangGraph travel-planning agent that decomposes origin, destination, budget, and interests into transport, destination-RAG, and optional web-search tool calls. Enforced structured planning with Function Calling, produced day-by-day attraction, restaurant, and per-person cost itineraries, and exposed persisted plans through a FastAPI + SQLite service. Added working memory, retries, semantic fallbacks, and an evaluation harness; verified with 22 automated tests on Python 3.11/3.12 CI.
 
 ## License
 
