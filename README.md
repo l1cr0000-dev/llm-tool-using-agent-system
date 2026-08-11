@@ -4,7 +4,7 @@
 
 ## Features
 
-- LangGraph `StateGraph` 编排：planner、router、execute_tool、recover、synthesizer。
+- LangGraph `StateGraph` 编排：planner、router、execute_tool、recover、synthesizer；DeepSeek Planner 使用 Function Calling 生成受 JSON Schema 约束的执行计划。
 - 多工具路由：web search、calculator、knowledge base RAG、time、weather。
 - Working memory：每步工具调用都落成结构化记录，供后续步骤和最终综合使用。
 - Failure recovery：query rewrite、retry、fallback tool。

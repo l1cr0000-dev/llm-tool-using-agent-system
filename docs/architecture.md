@@ -15,6 +15,12 @@ flowchart LR
     S --> A["final answer"]
 ```
 
+The DeepSeek planner requests a `create_execution_plan` Function Call and
+validates the returned schema locally before the router reads it. This keeps
+the model's tool choice structured while retaining a text-JSON fallback for
+OpenAI-compatible models that do not support forced tool selection. DeepSeek's
+official API documents `tools` and named `tool_choice` for this pattern.
+
 ## State
 
 The graph state carries `question`, `plan`, `current_step`, `selected_tool`, `tool_input`, `tool_results`, `working_memory`, `retry_count`, `final_answer`, and `trace`.

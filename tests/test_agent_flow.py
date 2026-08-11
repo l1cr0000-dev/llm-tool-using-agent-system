@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from tool_agent.graph import build_graph, run_agent
-from tool_agent.llm import FakeLLMClient
+from tool_agent.llm import DeepSeekLLMClient, FakeLLMClient
 from tool_agent.nodes import route_next_step
 from tool_agent.state import AgentState, PlanStep
 from tool_agent.tools.base import ToolResult
@@ -86,3 +86,32 @@ def test_graph_stops_recovering_after_retry_budget_is_exhausted() -> None:
     assert result["final_answer"] == "未能取得外部资料，因此基于失败状态回答。"
     assert len(result["tool_results"]) == 3
     assert any("recovery budget exhausted" in item for item in result["trace"])
+
+
+def test_deepseek_planner_uses_function_calling_and_normalises_plan() -> None:
+    class FakeCompletions:
+        def __init__(self) -> None:
+            self.kwargs = None
+
+        def create(self, **kwargs):
+            self.kwargs = kwargs
+            function = type("Function", (), {"arguments": '{"steps": [{"objective": "计算表达式", "tool": "calculator"}]}'})()
+            call = type("ToolCall", (), {"function": function})()
+            message = type("Message", (), {"tool_calls": [call]})()
+            choice = type("Choice", (), {"message": message})()
+            return type("Response", (), {"choices": [choice]})()
+
+    completions = FakeCompletions()
+    client = type("Client", (), {"chat": type("Chat", (), {"completions": completions})()})()
+    llm = DeepSeekLLMClient.__new__(DeepSeekLLMClient)
+    llm.client = client
+    llm.model = "deepseek-chat"
+
+    plan = llm.plan("计算 2 + 2")
+
+    assert completions.kwargs["tool_choice"]["function"]["name"] == "create_execution_plan"
+    assert completions.kwargs["tools"][0]["function"]["parameters"]["properties"]["steps"]
+    assert [(step.tool, step.objective) for step in plan] == [
+        ("calculator", "计算表达式"),
+        ("synthesize", "综合已有信息回答用户问题"),
+    ]

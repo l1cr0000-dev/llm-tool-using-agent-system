@@ -10,6 +10,35 @@ from openai import OpenAI
 from tool_agent.state import PlanStep
 
 
+AVAILABLE_TOOLS = ("web_search", "calculator", "knowledge_base", "get_time", "get_weather", "synthesize")
+PLAN_FUNCTION = {
+    "type": "function",
+    "function": {
+        "name": "create_execution_plan",
+        "description": "Create the ordered, minimal execution plan for an agent task.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "objective": {"type": "string"},
+                            "tool": {"type": "string", "enum": list(AVAILABLE_TOOLS)},
+                        },
+                        "required": ["objective", "tool"],
+                        "additionalProperties": False,
+                    },
+                }
+            },
+            "required": ["steps"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
 class LLMClient(Protocol):
     """LLM 抽象接口。
 
@@ -108,15 +137,29 @@ class DeepSeekLLMClient:
         self.client = OpenAI(api_key=self.api_key, base_url=base_url)
 
     def plan(self, question: str) -> list[PlanStep]:
-        # planner 的输出强制为 JSON 数组，方便程序解析并交给 router 执行。
+        # 优先通过 Function Calling 返回受约束的计划；失败时兼容旧模型的 JSON 文本输出。
         prompt = (
             "你是任务规划器。把用户问题拆成最少必要步骤。"
             "每步必须选择一个工具：web_search, calculator, knowledge_base, get_time, get_weather, synthesize。"
-            "只返回 JSON 数组，每项包含 id, objective, tool。"
+            "最后一步必须是 synthesize；不要执行工具，只创建计划。"
         )
-        content = self._chat(prompt, question)
-        data = json.loads(self._extract_json(content))
-        return [PlanStep.from_obj(item) for item in data]
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "system", "content": prompt}, {"role": "user", "content": question}],
+                tools=[PLAN_FUNCTION],
+                tool_choice={"type": "function", "function": {"name": "create_execution_plan"}},
+                temperature=0.2,
+            )
+            calls = response.choices[0].message.tool_calls or []
+            if calls:
+                return self._normalise_plan(json.loads(calls[0].function.arguments).get("steps", []))
+        except Exception:
+            # 部分兼容模型可能不支持强制 tool_choice；回退到 JSON prompt，保持可用性。
+            pass
+
+        content = self._chat(prompt + "只返回 JSON 数组，每项包含 id, objective, tool。", question)
+        return self._normalise_plan(json.loads(self._extract_json(content)))
 
     def synthesize(
         self,
@@ -148,6 +191,23 @@ class DeepSeekLLMClient:
         # 兼容模型偶尔把 JSON 包在解释文本或代码块附近的情况。
         match = re.search(r"\[[\s\S]*\]", content)
         return match.group(0) if match else content
+
+    def _normalise_plan(self, raw_steps: Any) -> list[PlanStep]:
+        """Validate model output before it becomes executable agent state."""
+        if not isinstance(raw_steps, list):
+            raise ValueError("planner output must contain a steps array")
+        steps: list[PlanStep] = []
+        for item in raw_steps:
+            if not isinstance(item, dict):
+                raise ValueError("planner step must be an object")
+            tool = str(item.get("tool", ""))
+            objective = str(item.get("objective", "")).strip()
+            if tool not in AVAILABLE_TOOLS or not objective:
+                raise ValueError("planner returned an invalid tool or empty objective")
+            if tool != "synthesize":
+                steps.append(PlanStep(id=len(steps) + 1, objective=objective, tool=tool))
+        steps.append(PlanStep(id=len(steps) + 1, objective="综合已有信息回答用户问题", tool="synthesize"))
+        return steps
 
 
 def create_default_llm() -> LLMClient:
