@@ -7,7 +7,7 @@
 - LangGraph `StateGraph` 编排：planner、router、execute_tool、recover、synthesizer；DeepSeek Planner 使用 Function Calling 生成受 JSON Schema 约束的执行计划。
 - 多工具路由：web search、calculator、knowledge base RAG、time、weather。
 - Working memory：每步工具调用都落成结构化记录，供后续步骤和最终综合使用。
-- Failure recovery：query rewrite、retry、fallback tool。
+- Failure recovery：query rewrite、retry、语义安全的 fallback tool；没有可信 fallback 时显式跳过并在综合答案中说明缺失信息。
 - CLI trace：可以直接看到规划、工具选择、执行、恢复和最终答案。
 - Dify 对照：提供 low-code workflow YAML、统一评测数据格式和误差分析报告。
 

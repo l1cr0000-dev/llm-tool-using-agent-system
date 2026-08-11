@@ -93,8 +93,16 @@ def recover_failed_step(state: AgentState | AgentStateDict) -> dict[str, Any]:
             "trace": append_trace(state, f"recover: rewritten query for {selected_tool}"),
         }
 
-    # 第二次失败后切换工具，例如 web search 失败就退回本地知识库。
+    # 第二次失败后仅切到语义上可信的 fallback；不相关的工具不会被错误调用。
     fallback = _fallback_for(str(selected_tool))
+    if fallback is None:
+        current = int(get_value(state, "current_step", 0))
+        return {
+            "current_step": current + 1,
+            "retry_count": 0,
+            "next_action": "skip",
+            "trace": append_trace(state, f"recover: no safe fallback for {selected_tool}; skipped step"),
+        }
     return {
         "selected_tool": fallback,
         "retry_count": retry_count + 1,
@@ -130,10 +138,15 @@ def decide_after_execute(state: AgentStateDict) -> str:
     return "router"
 
 
-def _fallback_for(tool_name: str) -> str:
-    """简单 fallback 策略：外部搜索和本地知识库互为补充。"""
+def decide_after_recover(state: AgentStateDict) -> str:
+    """Recovery may retry a tool or explicitly skip a step with no safe fallback."""
+    return "router" if get_value(state, "next_action") == "skip" else "execute_tool"
+
+
+def _fallback_for(tool_name: str) -> str | None:
+    """Only use fallbacks that can plausibly answer the original subtask."""
     if tool_name == "web_search":
         return "knowledge_base"
     if tool_name == "knowledge_base":
         return "web_search"
-    return "knowledge_base"
+    return None

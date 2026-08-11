@@ -8,6 +8,7 @@ from langgraph.graph import END, START, StateGraph
 
 from tool_agent.llm import LLMClient, create_default_llm
 from tool_agent.nodes import (
+    decide_after_recover,
     decide_after_execute,
     decide_after_route,
     execute_selected_tool,
@@ -49,7 +50,7 @@ def build_graph(llm_client: LLMClient | None = None, tool_registry: ToolRegistry
         decide_after_execute,
         {"router": "router", "recover": "recover", "synthesizer": "synthesizer"},
     )
-    builder.add_edge("recover", "execute_tool")
+    builder.add_conditional_edges("recover", decide_after_recover, {"router": "router", "execute_tool": "execute_tool"})
     builder.add_edge("synthesizer", END)
 
     # InMemorySaver 是 LangGraph 的 checkpoint。这里用于本地 demo；

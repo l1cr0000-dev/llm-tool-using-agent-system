@@ -40,8 +40,9 @@ The graph state carries `question`, `plan`, `current_step`, `selected_tool`, `to
 When a tool fails or returns no usable result, the graph enters `recover`.
 
 1. First failure: rewrite the query by adding a reliability hint, then retry the same tool.
-2. Second failure: switch to a fallback tool, usually `web_search <-> knowledge_base`.
-3. Every recovery decision is appended to `trace`.
+2. Second failure: switch only between semantic peers, `web_search <-> knowledge_base`.
+3. For calculator, time, and weather calls there is no unrelated fallback; the failed step is skipped and synthesis reports the gap.
+4. Every recovery decision is appended to `trace`.
 
 ## Dify Comparison
 

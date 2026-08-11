@@ -41,6 +41,25 @@ def test_recovery_rewrites_failed_query_and_uses_fallback_after_retry() -> None:
     assert second["next_action"] == "retry"
 
 
+def test_recovery_skips_step_when_no_semantic_fallback_exists() -> None:
+    from tool_agent.nodes import recover_failed_step
+
+    state = AgentState(
+        question="计算 1 / 0",
+        plan=[PlanStep(id=1, objective="计算 1 / 0", tool="calculator")],
+        current_step=0,
+        selected_tool="calculator",
+        tool_input="1 / 0",
+        retry_count=1,
+    )
+
+    update = recover_failed_step(state)
+
+    assert update["current_step"] == 1
+    assert update["next_action"] == "skip"
+    assert "no safe fallback" in update["trace"][-1]
+
+
 def test_graph_runs_full_plan_with_fake_tools() -> None:
     class FakeTools:
         def run(self, name: str, query: str) -> ToolResult:
