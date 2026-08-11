@@ -1,0 +1,15 @@
+{
+  "note": "Fill this file with observations from the same cases.json benchmark. Cost must be an actual provider bill or an explicitly documented estimate.",
+  "runs": [
+    {
+      "case_id": "calculation",
+      "planned_tools": ["calculator"],
+      "executed_tools": ["calculator"],
+      "task_decomposition_score": 1.0,
+      "tool_selection_f1": 1.0,
+      "execution_stability": 1.0,
+      "estimated_cost_usd": 0.0,
+      "error_categories": []
+    }
+  ]
+}

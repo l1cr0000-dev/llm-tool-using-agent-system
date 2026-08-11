@@ -1,0 +1,247 @@
+app:
+  description: Low-code comparison workflow for the LangGraph LLM tool-using agent demo.
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: llm-tool-agent-comparison
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.3.1
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+  graph:
+    edges:
+    - data:
+        sourceType: start
+        targetType: llm
+      id: start-to-planner
+      source: start_node
+      sourceHandle: source
+      target: planner_node
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        sourceType: llm
+        targetType: if-else
+      id: planner-to-router
+      source: planner_node
+      sourceHandle: source
+      target: router_node
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        sourceType: if-else
+        targetType: tool
+      id: router-to-tool
+      source: router_node
+      sourceHandle: tool
+      target: tool_node
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        sourceType: tool
+        targetType: llm
+      id: tool-to-synthesis
+      source: tool_node
+      sourceHandle: source
+      target: synthesis_node
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        sourceType: if-else
+        targetType: llm
+      id: router-to-synthesis
+      source: router_node
+      sourceHandle: synthesize
+      target: synthesis_node
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        sourceType: llm
+        targetType: end
+      id: synthesis-to-end
+      source: synthesis_node
+      sourceHandle: source
+      target: end_node
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        title: Start
+        type: start
+        variables:
+        - label: question
+          max_length: null
+          options: []
+          required: true
+          type: text-input
+          variable: question
+      height: 90
+      id: start_node
+      position:
+        x: 30
+        y: 240
+      positionAbsolute:
+        x: 30
+        y: 240
+      type: custom
+      width: 244
+    - data:
+        title: Planning LLM
+        type: llm
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.2
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/openai/openai
+        prompt_template:
+        - role: system
+          text: Return a JSON plan. Each step should choose one of web_search, calculator, knowledge_base, get_time, get_weather, synthesize.
+        - role: user
+          text: '{{#start_node.question#}}'
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: planner_node
+      position:
+        x: 334
+        y: 240
+      positionAbsolute:
+        x: 334
+        y: 240
+      type: custom
+      width: 244
+    - data:
+        title: Tool Router
+        type: if-else
+        cases:
+        - id: tool
+          case_id: tool
+          logical_operator: or
+          conditions:
+          - comparison_operator: contains
+            value: web_search
+            variable_selector:
+            - planner_node
+            - text
+        - id: synthesize
+          case_id: synthesize
+          logical_operator: or
+          conditions:
+          - comparison_operator: contains
+            value: synthesize
+            variable_selector:
+            - planner_node
+            - text
+      height: 160
+      id: router_node
+      position:
+        x: 638
+        y: 210
+      positionAbsolute:
+        x: 638
+        y: 210
+      type: custom
+      width: 244
+    - data:
+        title: Tool/RAG/Time/Weather
+        type: tool
+        provider_id: builtin
+        provider_name: Builtin or Marketplace Tools
+        provider_type: builtin
+        tool_label: Placeholder Tool Node
+        tool_name: configurable_tool
+        tool_configurations: {}
+        tool_parameters:
+          input: '{{#start_node.question#}}'
+      height: 90
+      id: tool_node
+      position:
+        x: 942
+        y: 240
+      positionAbsolute:
+        x: 942
+        y: 240
+      type: custom
+      width: 244
+    - data:
+        title: Synthesis LLM
+        type: llm
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.2
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/openai/openai
+        prompt_template:
+        - role: system
+          text: Synthesize a final answer from the plan and tool outputs. Mention missing data explicitly.
+        - role: user
+          text: 'Question: {{#start_node.question#}}\nPlan: {{#planner_node.text#}}\nTool output: {{#tool_node.text#}}'
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: synthesis_node
+      position:
+        x: 1246
+        y: 240
+      positionAbsolute:
+        x: 1246
+        y: 240
+      type: custom
+      width: 244
+    - data:
+        title: End
+        type: end
+        outputs:
+        - value_selector:
+          - synthesis_node
+          - text
+          value_type: string
+          variable: answer
+      height: 90
+      id: end_node
+      position:
+        x: 1550
+        y: 240
+      positionAbsolute:
+        x: 1550
+        y: 240
+      type: custom
+      width: 244
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.7

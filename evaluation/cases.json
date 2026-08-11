@@ -1,0 +1,20 @@
+[
+  {
+    "case_id": "calculation",
+    "question": "计算 128 * 37 / 16，并说明计算过程",
+    "expected_tools": ["calculator"],
+    "min_steps": 1
+  },
+  {
+    "case_id": "rag_explanation",
+    "question": "从知识库解释 LangGraph 为什么适合 stateful agent workflow",
+    "expected_tools": ["knowledge_base"],
+    "min_steps": 1
+  },
+  {
+    "case_id": "fresh_information",
+    "question": "搜索 LangGraph 的最新信息，并结合知识库总结它和 Dify 的差异",
+    "expected_tools": ["web_search", "knowledge_base"],
+    "min_steps": 2
+  }
+]
