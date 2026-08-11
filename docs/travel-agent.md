@@ -13,6 +13,10 @@ Required inputs are `origin` and `destination`. Optional inputs are `--days`,
 attractions and one restaurant, transport alternatives, a per-person cost
 breakdown, and an explicit budget-overrun warning.
 
+`TravelPlanResult` also keeps the Markdown, structured cost totals, warnings,
+Agent trace, and tool results. The CLI uses the Markdown; the REST API persists
+and returns the complete structured result for a product client.
+
 ## Tools
 
 - `transport_quote` estimates route distance, two one-way transport options,

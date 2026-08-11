@@ -104,6 +104,22 @@ def travel(
     typer.echo(TravelPlanner(graph=_build_graph(offline)).create_plan(request))
 
 
+@app.command()
+def serve(
+    host: Annotated[str, typer.Option(help="Host interface to bind.")] = "127.0.0.1",
+    port: Annotated[int, typer.Option(min=1, max=65535, help="TCP port to bind.")] = 8000,
+    database: Annotated[Path, typer.Option(help="SQLite path for saved plans.")] = Path("data/travel_plans.db"),
+    offline: Annotated[bool, typer.Option("--offline/--live", help="Keep external LLM and web calls disabled.")] = True,
+) -> None:
+    """Start the Travel Planner REST API with OpenAPI documentation at /docs."""
+    import uvicorn
+
+    from tool_agent.api import create_app
+
+    load_dotenv()
+    uvicorn.run(create_app(database_path=database, offline=offline), host=host, port=port)
+
+
 def _build_graph(offline: bool):
     """Build an offline-safe graph for demos and deterministic test runs."""
     if not offline:

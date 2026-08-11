@@ -19,7 +19,7 @@
 | 执行稳定性 | Query Rewrite → Retry → 语义安全 fallback → 明确跳过 | working memory 与可观察 trace |
 | 评测与成本意识 | 任务拆解、工具选择 F1、稳定性、估算调用成本与误差分类 | 版本控制的 benchmark / 报告命令 |
 
-当前包含 **20 项自动化测试**，GitHub Actions 在 Python 3.11 与 3.12 上验证。
+当前包含 **22 项自动化测试**，GitHub Actions 在 Python 3.11 与 3.12 上验证。
 
 ## 30 秒体验
 
@@ -43,6 +43,25 @@ tool-agent travel 北京 上海 \
 - 可审计的本地 RAG 数据来源与费用估算说明
 
 查看完整示例：[上海 3 日行程输出](docs/travel-demo.md)。离线演示覆盖北京、上海、杭州、成都、三亚。
+
+## REST API：可接入产品，而不只是命令行
+
+项目提供 FastAPI 服务与自动 OpenAPI 文档，默认离线运行，不会产生模型或搜索调用费用：
+
+```bash
+tool-agent serve --offline
+# Open http://127.0.0.1:8000/docs
+```
+
+创建和保存一次计划：
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/travel-plans \
+  -H "Content-Type: application/json" \
+  -d '{"origin":"北京","destination":"上海","days":3,"budget_cny":4500,"interests":["美食","城市"]}'
+```
+
+接口会返回机器可读的行程 Markdown、每日和总计费用、工具 trace、警告信息与计划 ID；SQLite 默认保存在 `data/travel_plans.db`，可通过 `GET /api/travel-plans/{id}` 读取历史计划。
 
 ## Agent 架构
 
@@ -79,6 +98,7 @@ flowchart LR
 
 ```bash
 tool-agent travel 上海 北京 --days 3 --budget 4500 --interests 历史,美食 --offline
+tool-agent serve --offline
 ```
 
 ### 通用 Tool-Using Agent
@@ -119,6 +139,7 @@ TAVILY_API_KEY=your-tavily-api-key
 ## 项目文档
 
 - [旅行 Agent 设计](docs/travel-agent.md)
+- [REST API 设计](docs/api.md)
 - [总体架构与恢复策略](docs/architecture.md)
 - [评测方法与误差分析](docs/evaluation.md)
 - [离线旅行演示](docs/travel-demo.md)
@@ -127,11 +148,11 @@ TAVILY_API_KEY=your-tavily-api-key
 
 **中文**
 
-> 设计并实现基于 LangGraph 的旅游计划编排 Agent，将出发地、目的地、预算与偏好拆解为交通报价、目的地 RAG 和可选 Web Search 调用；通过 Function Calling 约束规划输出，生成逐日景点、餐厅与人均预算。实现 working memory、query rewrite、retry 与语义安全 fallback，并构建覆盖任务拆解、工具选择、执行稳定性和调用成本的评测框架；20 项自动化测试在 Python 3.11/3.12 CI 中通过。
+> 设计并实现基于 LangGraph 的旅游计划编排 Agent，将出发地、目的地、预算与偏好拆解为交通报价、目的地 RAG 和可选 Web Search 调用；通过 Function Calling 约束规划输出，生成逐日景点、餐厅与人均预算。实现 working memory、query rewrite、retry 与语义安全 fallback，并提供 FastAPI + SQLite 的计划创建与历史查询接口；22 项自动化测试在 Python 3.11/3.12 CI 中通过。
 
 **English**
 
-> Built a LangGraph travel-planning agent that decomposes origin, destination, budget, and interests into transport, destination-RAG, and optional web-search tool calls. Enforced structured planning with Function Calling, produced day-by-day attraction, restaurant, and per-person cost itineraries, and added working memory, retries, semantic fallbacks, and an evaluation harness for decomposition, tool selection, stability, and estimated cost. Verified with 20 automated tests on Python 3.11/3.12 CI.
+> Built a LangGraph travel-planning agent that decomposes origin, destination, budget, and interests into transport, destination-RAG, and optional web-search tool calls. Enforced structured planning with Function Calling, produced day-by-day attraction, restaurant, and per-person cost itineraries, and exposed persisted plans through a FastAPI + SQLite service. Added working memory, retries, semantic fallbacks, and an evaluation harness; verified with 22 automated tests on Python 3.11/3.12 CI.
 
 ## License
 

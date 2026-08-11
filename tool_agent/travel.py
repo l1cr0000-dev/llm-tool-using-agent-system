@@ -26,6 +26,20 @@ class TravelRequest:
             raise ValueError("budget must be a positive amount")
 
 
+@dataclass(frozen=True, slots=True)
+class TravelPlanResult:
+    """A machine-readable travel plan suitable for CLI, APIs, and persistence."""
+
+    markdown: str
+    complete: bool
+    total_cost_cny: int | None
+    transport_cost_cny: int | None
+    daily_costs_cny: tuple[int, ...]
+    warnings: tuple[str, ...]
+    trace: tuple[str, ...]
+    tool_results: tuple[dict[str, Any], ...]
+
+
 class TravelPlanner:
     """Uses the existing agent to collect facts, then renders a traceable itinerary."""
 
@@ -34,6 +48,9 @@ class TravelPlanner:
         self._agent_runner = agent_runner
 
     def create_plan(self, request: TravelRequest) -> str:
+        return self.create_plan_result(request).markdown
+
+    def create_plan_result(self, request: TravelRequest) -> TravelPlanResult:
         request.validate()
         result = self._run_agent(request)
         data = self._tool_data(result)
@@ -41,7 +58,16 @@ class TravelPlanner:
         guide = data.get("destination_guide")
         if not transport or not guide:
             missing = "、".join(name for name, value in {"交通报价": transport, "目的地指南": guide}.items() if not value)
-            return f"# {request.destination} {request.days} 日旅行计划\n\n暂无法生成完整计划，缺少：{missing}。请配置联网搜索或选择内置目的地。"
+            return TravelPlanResult(
+                markdown=f"# {request.destination} {request.days} 日旅行计划\n\n暂无法生成完整计划，缺少：{missing}。请配置联网搜索或选择内置目的地。",
+                complete=False,
+                total_cost_cny=None,
+                transport_cost_cny=None,
+                daily_costs_cny=(),
+                warnings=(f"缺少：{missing}",),
+                trace=tuple(result.get("trace", [])),
+                tool_results=tuple(result.get("tool_results", [])),
+            )
 
         attractions = self._rank_attractions(guide["attractions"], request.interests)
         restaurants = guide["restaurants"]
@@ -55,7 +81,11 @@ class TravelPlanner:
             for item in transport["options"]
         )
         interests = "、".join(request.interests) if request.interests else "综合体验"
-        return "\n".join(
+        warnings = (
+            "景点票价、餐厅排队和交通价格会随日期变化；出发前请以官方渠道和实际订单为准。",
+            "需要实时航班、酒店或天气时，在请求中加入“最新”，并配置 `TAVILY_API_KEY` 让 Agent 补充联网搜索。",
+        )
+        markdown = "\n".join(
             [
                 f"# {request.destination} {request.days} 日旅行计划",
                 "",
@@ -78,9 +108,18 @@ class TravelPlanner:
                 f"- {budget_line}",
                 "",
                 "## 预订建议",
-                "- 景点票价、餐厅排队和交通价格会随日期变化；出发前请以官方渠道和实际订单为准。",
-                "- 需要实时航班、酒店或天气时，在请求中加入“最新”，并配置 `TAVILY_API_KEY` 让 Agent 补充联网搜索。",
+                *(f"- {warning}" for warning in warnings),
             ]
+        )
+        return TravelPlanResult(
+            markdown=markdown,
+            complete=True,
+            total_cost_cny=total,
+            transport_cost_cny=transport_cost,
+            daily_costs_cny=tuple(daily_totals),
+            warnings=warnings,
+            trace=tuple(result.get("trace", [])),
+            tool_results=tuple(result.get("tool_results", [])),
         )
 
     def _run_agent(self, request: TravelRequest) -> dict[str, Any]:
