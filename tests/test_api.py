@@ -10,6 +10,9 @@ def test_api_creates_persists_and_reads_travel_plan(tmp_path) -> None:
     client = TestClient(app)
 
     health = client.get("/health")
+    home = client.get("/")
+    script = client.get("/static/app.js")
+    favicon = client.get("/favicon.ico")
     created = client.post(
         "/api/travel-plans",
         json={
@@ -18,16 +21,27 @@ def test_api_creates_persists_and_reads_travel_plan(tmp_path) -> None:
             "days": 2,
             "budget_cny": 4000,
             "interests": ["美食", "城市"],
+            "travelers": 2,
+            "lodging_preference": "舒适",
+            "pace": "适中",
         },
     )
 
     assert health.status_code == 200
     assert health.json() == {"status": "ok", "offline": True}
+    assert home.status_code == 200
+    assert "吃住行游一站式计划" in home.text
+    assert script.status_code == 200
+    assert favicon.status_code == 204
     assert created.status_code == 201
     record = created.json()
     assert record["result"]["complete"] is True
     assert record["result"]["total_cost_cny"] > 0
     assert "# 上海 2 日旅行计划" in record["result"]["markdown"]
+    assert record["result"]["details"]["stay"]["style"] == "舒适"
+    assert record["result"]["details"]["drinks"]
+    assert record["result"]["details"]["local_transport"]
+    assert len(record["result"]["details"]["booking_checklist"]) == 4
 
     fetched = client.get(f"/api/travel-plans/{record['id']}")
     listed = client.get("/api/travel-plans?limit=5")

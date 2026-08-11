@@ -1,6 +1,6 @@
 [project]
 name = "llm-tool-agent-system"
-version = "0.2.0"
+version = "0.3.0"
 description = "LangGraph-based LLM tool-using agent with planning, memory, recovery, RAG, and Dify comparison."
 readme = "README.md"
 requires-python = ">=3.11"

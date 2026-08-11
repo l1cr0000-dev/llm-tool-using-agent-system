@@ -42,6 +42,9 @@ class DestinationGuideTool:
                 "source": self.guide_path.name,
                 "attractions": guide["attractions"],
                 "restaurants": guide["restaurants"],
+                "accommodations": guide.get("accommodations", []),
+                "drinks": guide.get("drinks", []),
+                "local_transport": guide.get("local_transport", []),
                 "daily_cost": guide["daily_cost"],
             },
         )

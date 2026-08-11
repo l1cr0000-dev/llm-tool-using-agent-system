@@ -9,3 +9,4 @@ build/
 *.egg-info/
 evaluation/results/
 data/
+.playwright-cli/

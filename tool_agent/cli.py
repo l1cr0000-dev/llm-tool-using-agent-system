@@ -90,6 +90,9 @@ def travel(
     days: Annotated[int, typer.Option(min=1, max=14, help="Number of travel days.")] = 3,
     budget: Annotated[int | None, typer.Option(min=1, help="Optional per-person budget in CNY.")] = None,
     interests: Annotated[str, typer.Option(help="Comma-separated interests, for example 历史,美食.")] = "",
+    travelers: Annotated[int, typer.Option(min=1, max=12, help="Number of travelers.")] = 1,
+    lodging: Annotated[str, typer.Option(help="Lodging preference: 经济, 舒适, or 高端.")] = "舒适",
+    pace: Annotated[str, typer.Option(help="Travel pace: 轻松, 适中, or 充实.")] = "适中",
     offline: Annotated[bool, typer.Option(help="Use local travel RAG data and deterministic planning.")] = False,
 ) -> None:
     """Create a day-by-day travel itinerary with transport, food, and costs."""
@@ -100,6 +103,9 @@ def travel(
         days=days,
         budget_cny=budget,
         interests=tuple(item.strip() for item in interests.replace("，", ",").split(",") if item.strip()),
+        travelers=travelers,
+        lodging_preference=lodging,
+        pace=pace,
     )
     typer.echo(TravelPlanner(graph=_build_graph(offline)).create_plan(request))
 

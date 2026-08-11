@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-1C3C3C)](https://langchain-ai.github.io/langgraph/)
 
-一个可运行、可测试的旅行计划编排 Agent。用户输入出发地、目的地、天数、预算与旅行偏好，系统会通过 **Planning → Tool Routing → Execution → Recovery → Synthesis** 生成逐日景点、餐厅、交通选择与单人费用计划。
+一个可运行、可测试的旅行计划编排 Agent。用户输入出发地、目的地、天数、人数、预算、住宿偏好与旅行节奏，系统会通过 **Planning → Tool Routing → Execution → Recovery → Synthesis** 生成吃、住、行、游、预算与预订清单的完整决策包。
 
 > 作品集定位：展示 LLM Function Calling、RAG、Tool Calling、状态管理、容错恢复与可复现实验，而不是一个静态的旅行推荐页面。
 
@@ -44,13 +44,13 @@ tool-agent travel 北京 上海 \
 
 查看完整示例：[上海 3 日行程输出](docs/travel-demo.md)。离线演示覆盖北京、上海、杭州、成都、三亚。
 
-## REST API：可接入产品，而不只是命令行
+## 可点击旅行工作台 + REST API
 
 项目提供 FastAPI 服务与自动 OpenAPI 文档，默认离线运行，不会产生模型或搜索调用费用：
 
 ```bash
 tool-agent serve --offline
-# Open http://127.0.0.1:8000/docs
+# 打开 http://127.0.0.1:8000
 ```
 
 创建和保存一次计划：
@@ -61,7 +61,7 @@ curl -X POST http://127.0.0.1:8000/api/travel-plans \
   -d '{"origin":"北京","destination":"上海","days":3,"budget_cny":4500,"interests":["美食","城市"]}'
 ```
 
-接口会返回机器可读的行程 Markdown、每日和总计费用、工具 trace、警告信息与计划 ID；SQLite 默认保存在 `data/travel_plans.db`，可通过 `GET /api/travel-plans/{id}` 读取历史计划。
+工作台支持生成并保存计划、展开交通与每日行程详情、勾选预订清单、查看历史计划。每份计划由交通、住宿、餐饮饮品、本地出行、逐日行程、预算与风险提示构成。API 同时返回机器可读的结构化结果；SQLite 默认保存在 `data/travel_plans.db`，可通过 `GET /api/travel-plans/{id}` 读取历史计划，接口文档在 `/docs`。
 
 ## Agent 架构
 

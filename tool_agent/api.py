@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Callable
 
 from fastapi import FastAPI, HTTPException, Query, status
+from fastapi.responses import FileResponse, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from tool_agent.graph import build_graph
@@ -27,6 +29,9 @@ class TravelPlanInput(BaseModel):
     days: int = Field(default=3, ge=1, le=14)
     budget_cny: int | None = Field(default=None, ge=1)
     interests: list[str] = Field(default_factory=list, max_length=8)
+    travelers: int = Field(default=1, ge=1, le=12)
+    lodging_preference: str = Field(default="舒适", pattern="^(经济|舒适|高端)$")
+    pace: str = Field(default="适中", pattern="^(轻松|适中|充实)$")
 
 
 class TravelPlanRepository:
@@ -46,6 +51,8 @@ class TravelPlanRepository:
                 )
                 """
             )
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_travel_plans_created_at ON travel_plans (created_at DESC)")
+            connection.execute("PRAGMA optimize")
 
     def save(self, request: TravelPlanInput, result: TravelPlanResult) -> dict[str, object]:
         record = {
@@ -102,9 +109,19 @@ def create_app(
     make_planner = planner_factory or _default_planner
     app = FastAPI(
         title="Travel Planner Agent API",
-        version="0.2.0",
-        description="Generate and persist tool-using travel plans. OpenAPI is available at /docs.",
+        version="0.3.0",
+        description="Generate, persist, and inspect complete tool-using travel plans. OpenAPI is available at /docs.",
     )
+    web_dir = Path(__file__).resolve().parent / "web"
+    app.mount("/static", StaticFiles(directory=web_dir), name="static")
+
+    @app.get("/", include_in_schema=False)
+    def home() -> FileResponse:
+        return FileResponse(web_dir / "index.html")
+
+    @app.get("/favicon.ico", include_in_schema=False)
+    def favicon() -> Response:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @app.get("/health")
     def health() -> dict[str, str | bool]:
@@ -118,6 +135,9 @@ def create_app(
             days=payload.days,
             budget_cny=payload.budget_cny,
             interests=tuple(payload.interests),
+            travelers=payload.travelers,
+            lodging_preference=payload.lodging_preference,
+            pace=payload.pace,
         )
         result = make_planner(offline).create_plan_result(request)
         return repository.save(payload, result)

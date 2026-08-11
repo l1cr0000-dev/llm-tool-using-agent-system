@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Travel Planner Agent — complete travel decision planning" />
+    <title>旅伴 Agent · 吃住行游一站式计划</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">TRAVEL PLANNER AGENT</p>
+        <h1>把一次旅行，<em>拆成可执行的决定。</em></h1>
+        <p class="lead">输入目的地与预算，Agent 会编排行、住、游、吃喝与预订清单；每一项都可展开查看依据。</p>
+      </section>
+
+      <section class="planner-panel" aria-labelledby="plan-title">
+        <div class="panel-heading"><h2 id="plan-title">开始规划</h2><button id="history-button" class="text-button" type="button">查看历史计划</button></div>
+        <form id="planner-form">
+          <div class="form-grid">
+            <label>出发地<input name="origin" value="北京" required /></label>
+            <label>目的地<input name="destination" value="上海" required /></label>
+            <label>旅行天数<input name="days" type="number" min="1" max="14" value="3" required /></label>
+            <label>每人预算（元）<input name="budget_cny" type="number" min="1" value="4500" /></label>
+            <label>出行人数<input name="travelers" type="number" min="1" max="12" value="2" required /></label>
+            <label>旅行节奏<select name="pace"><option>轻松</option><option selected>适中</option><option>充实</option></select></label>
+            <label>住宿偏好<select name="lodging_preference"><option>经济</option><option selected>舒适</option><option>高端</option></select></label>
+            <label>兴趣偏好<input name="interests" value="美食,城市" placeholder="美食,历史,亲子" /></label>
+          </div>
+          <button class="primary" type="submit">生成完整旅行决策包 <span>→</span></button>
+          <p id="form-status" class="status" role="status"></p>
+        </form>
+      </section>
+
+      <section id="history" class="history hidden" aria-live="polite"></section>
+      <section id="result" class="result hidden" aria-live="polite"></section>
+    </main>
+    <template id="history-item-template"><button class="history-item" type="button"></button></template>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

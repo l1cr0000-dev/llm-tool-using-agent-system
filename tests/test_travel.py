@@ -36,14 +36,22 @@ def test_travel_planner_renders_itinerary_and_budget_from_tool_results() -> None
             ]
         }
 
-    plan = TravelPlanner(agent_runner=fake_runner).create_plan(
+    result = TravelPlanner(agent_runner=fake_runner).create_plan_result(
         TravelRequest(origin="上海", destination="北京", days=2, budget_cny=2500, interests=("历史",))
     )
+    plan = result.markdown
 
     assert "# 北京 2 日旅行计划" in plan
     assert "| 第 1 天 | 博物馆" in plan
     assert "总计：¥2540 / 人" in plan
+    assert "住宿建议" in plan
+    assert "吃喝建议" in plan
+    assert "本地出行" in plan
+    assert "预订清单" in plan
     assert "预计超出 ¥40" in plan
+    assert result.details["stay"]["style"] == "舒适"
+    assert result.details["itinerary"][0]["drink"]["kind"] == "咖啡"
+    assert result.details["budget"]["group_total_cny"] == 2540
 
 
 def test_travel_cli_runs_offline_end_to_end() -> None:

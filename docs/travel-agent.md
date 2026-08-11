@@ -13,6 +13,12 @@ Required inputs are `origin` and `destination`. Optional inputs are `--days`,
 attractions and one restaurant, transport alternatives, a per-person cost
 breakdown, and an explicit budget-overrun warning.
 
+The request also supports `travelers`, `lodging_preference` (`经济`, `舒适`,
+or `高端`), and `pace` (`轻松`, `适中`, or `充实`). A complete plan combines
+intercity transport, a recommended stay, restaurant and drink suggestions,
+local mobility guidance, daily attractions, per-person and group costs, risk
+notes, and a booking checklist.
+
 `TravelPlanResult` also keeps the Markdown, structured cost totals, warnings,
 Agent trace, and tool results. The CLI uses the Markdown; the REST API persists
 and returns the complete structured result for a product client.
@@ -24,7 +30,8 @@ and returns the complete structured result for a product client.
   quotes.
 - `destination_guide` retrieves a destination document from
   `travel_kb/destinations.json`. Each document contains attractions, restaurants,
-  tags, ticket prices, and daily baseline costs.
+  accommodations, drinks, local transport options, tags, ticket prices, and
+  daily baseline costs.
 - `web_search` is added to the plan when the request asks for current or latest
   data. It remains optional so the complete showcase works offline.
 

@@ -14,6 +14,19 @@
       {"name": "尹三豆汁", "area": "东城", "cuisine": "北京小吃", "avg_cost_cny": 35},
       {"name": "护国寺小吃", "area": "西城", "cuisine": "北京小吃", "avg_cost_cny": 45}
     ],
+    "accommodations": [
+      {"name": "前门舒适型酒店", "area": "东城", "style": "经济", "avg_cost_cny": 360, "note": "步行可到前门与地铁站。"},
+      {"name": "王府井精品酒店", "area": "东城", "style": "舒适", "avg_cost_cny": 520, "note": "适合历史景点与餐饮集中安排。"},
+      {"name": "国贸高端酒店", "area": "朝阳", "style": "高端", "avg_cost_cny": 980, "note": "适合商务与高品质餐饮体验。"}
+    ],
+    "drinks": [
+      {"name": "故宫角楼咖啡", "area": "东城", "kind": "咖啡", "avg_cost_cny": 48},
+      {"name": "老北京茶馆", "area": "西城", "kind": "茶饮", "avg_cost_cny": 58}
+    ],
+    "local_transport": [
+      {"mode": "地铁 + 步行", "tip": "东城景点集中，优先使用地铁 1/2/8 号线。", "avg_cost_cny": 25},
+      {"mode": "网约车", "tip": "长城等远郊行程建议预留往返时间。", "avg_cost_cny": 120}
+    ],
     "daily_cost": {"lodging_cny": 520, "food_cny": 220, "local_transport_cny": 55}
   },
   {
@@ -30,6 +43,19 @@
       {"name": "南翔馒头店", "area": "黄浦", "cuisine": "本帮点心", "avg_cost_cny": 45},
       {"name": "老吉士", "area": "徐汇", "cuisine": "本帮菜", "avg_cost_cny": 180},
       {"name": "光明邨大酒家", "area": "淮海路", "cuisine": "上海小吃", "avg_cost_cny": 55}
+    ],
+    "accommodations": [
+      {"name": "南京东路连锁酒店", "area": "黄浦", "style": "经济", "avg_cost_cny": 420, "note": "方便外滩、豫园和地铁换乘。"},
+      {"name": "武康路设计酒店", "area": "徐汇", "style": "舒适", "avg_cost_cny": 560, "note": "适合街区漫游与本帮菜体验。"},
+      {"name": "陆家嘴江景酒店", "area": "浦东", "style": "高端", "avg_cost_cny": 1100, "note": "适合江景、博物馆和迪士尼延展行程。"}
+    ],
+    "drinks": [
+      {"name": "武康路咖啡馆", "area": "徐汇", "kind": "咖啡", "avg_cost_cny": 45},
+      {"name": "外滩景观酒吧", "area": "黄浦", "kind": "鸡尾酒", "avg_cost_cny": 120}
+    ],
+    "local_transport": [
+      {"mode": "地铁 + 步行", "tip": "黄浦、徐汇与浦东跨区时避开高峰。", "avg_cost_cny": 25},
+      {"mode": "网约车", "tip": "夜间或携带行李时更省时。", "avg_cost_cny": 95}
     ],
     "daily_cost": {"lodging_cny": 560, "food_cny": 230, "local_transport_cny": 50}
   },
@@ -48,6 +74,19 @@
       {"name": "知味观", "area": "上城", "cuisine": "杭州小吃", "avg_cost_cny": 55},
       {"name": "方老大面", "area": "上城", "cuisine": "面食", "avg_cost_cny": 35}
     ],
+    "accommodations": [
+      {"name": "河坊街客栈", "area": "上城", "style": "经济", "avg_cost_cny": 320, "note": "步行可到河坊街和南宋御街。"},
+      {"name": "西湖湖畔酒店", "area": "西湖", "style": "舒适", "avg_cost_cny": 460, "note": "适合西湖和灵隐寺行程。"},
+      {"name": "西溪度假酒店", "area": "西湖", "style": "高端", "avg_cost_cny": 860, "note": "适合慢节奏与自然体验。"}
+    ],
+    "drinks": [
+      {"name": "龙井茶室", "area": "西湖", "kind": "茶饮", "avg_cost_cny": 68},
+      {"name": "湖滨咖啡", "area": "上城", "kind": "咖啡", "avg_cost_cny": 42}
+    ],
+    "local_transport": [
+      {"mode": "公交 + 步行", "tip": "西湖周边适合步行，跨区使用公交或地铁。", "avg_cost_cny": 20},
+      {"mode": "网约车", "tip": "灵隐寺和西溪湿地建议避开早晚高峰。", "avg_cost_cny": 85}
+    ],
     "daily_cost": {"lodging_cny": 460, "food_cny": 190, "local_transport_cny": 45}
   },
   {
@@ -65,6 +104,19 @@
       {"name": "小龙坎火锅", "area": "武侯", "cuisine": "火锅", "avg_cost_cny": 120},
       {"name": "龙抄手", "area": "青羊", "cuisine": "成都小吃", "avg_cost_cny": 35}
     ],
+    "accommodations": [
+      {"name": "春熙路连锁酒店", "area": "锦江", "style": "经济", "avg_cost_cny": 280, "note": "交通方便，餐饮选择密集。"},
+      {"name": "宽窄巷子精品酒店", "area": "青羊", "style": "舒适", "avg_cost_cny": 380, "note": "适合文化街区与慢节奏体验。"},
+      {"name": "太古里高端酒店", "area": "锦江", "style": "高端", "avg_cost_cny": 760, "note": "适合购物与品质餐饮。"}
+    ],
+    "drinks": [
+      {"name": "人民公园鹤鸣茶馆", "area": "青羊", "kind": "盖碗茶", "avg_cost_cny": 38},
+      {"name": "玉林路咖啡馆", "area": "武侯", "kind": "咖啡", "avg_cost_cny": 40}
+    ],
+    "local_transport": [
+      {"mode": "地铁 + 步行", "tip": "大熊猫基地建议尽早出发并预留接驳时间。", "avg_cost_cny": 20},
+      {"mode": "网约车", "tip": "火锅晚餐后返程更方便。", "avg_cost_cny": 70}
+    ],
     "daily_cost": {"lodging_cny": 380, "food_cny": 180, "local_transport_cny": 40}
   },
   {
@@ -81,6 +133,19 @@
       {"name": "琼乡阁", "area": "吉阳", "cuisine": "海南菜", "avg_cost_cny": 120},
       {"name": "阿浪海鲜", "area": "天涯", "cuisine": "海鲜", "avg_cost_cny": 180},
       {"name": "文昌小老弟糟粕醋", "area": "吉阳", "cuisine": "海南火锅", "avg_cost_cny": 110}
+    ],
+    "accommodations": [
+      {"name": "三亚湾海景公寓", "area": "天涯", "style": "经济", "avg_cost_cny": 480, "note": "适合看日落与海边散步。"},
+      {"name": "亚龙湾度假酒店", "area": "吉阳", "style": "舒适", "avg_cost_cny": 680, "note": "适合海滩和亲子活动。"},
+      {"name": "海棠湾高端度假村", "area": "海棠", "style": "高端", "avg_cost_cny": 1500, "note": "适合海岛和高品质度假体验。"}
+    ],
+    "drinks": [
+      {"name": "椰梦长廊椰子摊", "area": "天涯", "kind": "椰子饮品", "avg_cost_cny": 25},
+      {"name": "海棠湾咖啡馆", "area": "海棠", "kind": "咖啡", "avg_cost_cny": 55}
+    ],
+    "local_transport": [
+      {"mode": "网约车", "tip": "景点间距离较远，建议按区域安排。", "avg_cost_cny": 130},
+      {"mode": "酒店接驳", "tip": "预订海岛项目时确认接送范围。", "avg_cost_cny": 60}
     ],
     "daily_cost": {"lodging_cny": 680, "food_cny": 260, "local_transport_cny": 90}
   }
