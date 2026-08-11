@@ -149,4 +149,6 @@ def _fallback_for(tool_name: str) -> str | None:
         return "knowledge_base"
     if tool_name == "knowledge_base":
         return "web_search"
+    if tool_name == "destination_guide":
+        return "web_search"
     return None

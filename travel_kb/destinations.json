@@ -1,0 +1,87 @@
+[
+  {
+    "city": "北京",
+    "aliases": ["Beijing"],
+    "attractions": [
+      {"name": "故宫博物院", "area": "东城", "ticket_cny": 60, "tags": ["历史", "建筑"]},
+      {"name": "天坛公园", "area": "东城", "ticket_cny": 34, "tags": ["历史", "园林"]},
+      {"name": "颐和园", "area": "海淀", "ticket_cny": 30, "tags": ["园林", "湖景"]},
+      {"name": "八达岭长城", "area": "延庆", "ticket_cny": 40, "tags": ["历史", "户外"]},
+      {"name": "国家博物馆", "area": "东城", "ticket_cny": 0, "tags": ["历史", "博物馆"]}
+    ],
+    "restaurants": [
+      {"name": "四季民福烤鸭店", "area": "东城", "cuisine": "北京菜", "avg_cost_cny": 160},
+      {"name": "尹三豆汁", "area": "东城", "cuisine": "北京小吃", "avg_cost_cny": 35},
+      {"name": "护国寺小吃", "area": "西城", "cuisine": "北京小吃", "avg_cost_cny": 45}
+    ],
+    "daily_cost": {"lodging_cny": 520, "food_cny": 220, "local_transport_cny": 55}
+  },
+  {
+    "city": "上海",
+    "aliases": ["Shanghai"],
+    "attractions": [
+      {"name": "外滩", "area": "黄浦", "ticket_cny": 0, "tags": ["城市", "夜景"]},
+      {"name": "豫园", "area": "黄浦", "ticket_cny": 40, "tags": ["园林", "历史"]},
+      {"name": "上海博物馆东馆", "area": "浦东", "ticket_cny": 0, "tags": ["博物馆", "艺术"]},
+      {"name": "武康路", "area": "徐汇", "ticket_cny": 0, "tags": ["建筑", "街区"]},
+      {"name": "上海迪士尼乐园", "area": "浦东", "ticket_cny": 719, "tags": ["亲子", "主题乐园"]}
+    ],
+    "restaurants": [
+      {"name": "南翔馒头店", "area": "黄浦", "cuisine": "本帮点心", "avg_cost_cny": 45},
+      {"name": "老吉士", "area": "徐汇", "cuisine": "本帮菜", "avg_cost_cny": 180},
+      {"name": "光明邨大酒家", "area": "淮海路", "cuisine": "上海小吃", "avg_cost_cny": 55}
+    ],
+    "daily_cost": {"lodging_cny": 560, "food_cny": 230, "local_transport_cny": 50}
+  },
+  {
+    "city": "杭州",
+    "aliases": ["Hangzhou"],
+    "attractions": [
+      {"name": "西湖", "area": "西湖", "ticket_cny": 0, "tags": ["湖景", "园林"]},
+      {"name": "灵隐寺", "area": "西湖", "ticket_cny": 75, "tags": ["历史", "寺庙"]},
+      {"name": "中国茶叶博物馆", "area": "西湖", "ticket_cny": 0, "tags": ["博物馆", "茶文化"]},
+      {"name": "河坊街", "area": "上城", "ticket_cny": 0, "tags": ["街区", "历史"]},
+      {"name": "西溪湿地", "area": "西湖", "ticket_cny": 80, "tags": ["自然", "户外"]}
+    ],
+    "restaurants": [
+      {"name": "楼外楼", "area": "西湖", "cuisine": "杭帮菜", "avg_cost_cny": 180},
+      {"name": "知味观", "area": "上城", "cuisine": "杭州小吃", "avg_cost_cny": 55},
+      {"name": "方老大面", "area": "上城", "cuisine": "面食", "avg_cost_cny": 35}
+    ],
+    "daily_cost": {"lodging_cny": 460, "food_cny": 190, "local_transport_cny": 45}
+  },
+  {
+    "city": "成都",
+    "aliases": ["Chengdu"],
+    "attractions": [
+      {"name": "成都大熊猫繁育研究基地", "area": "成华", "ticket_cny": 55, "tags": ["亲子", "动物"]},
+      {"name": "宽窄巷子", "area": "青羊", "ticket_cny": 0, "tags": ["街区", "历史"]},
+      {"name": "武侯祠", "area": "武侯", "ticket_cny": 50, "tags": ["历史", "博物馆"]},
+      {"name": "杜甫草堂", "area": "青羊", "ticket_cny": 50, "tags": ["历史", "园林"]},
+      {"name": "人民公园", "area": "青羊", "ticket_cny": 0, "tags": ["休闲", "茶文化"]}
+    ],
+    "restaurants": [
+      {"name": "陈麻婆豆腐", "area": "青羊", "cuisine": "川菜", "avg_cost_cny": 85},
+      {"name": "小龙坎火锅", "area": "武侯", "cuisine": "火锅", "avg_cost_cny": 120},
+      {"name": "龙抄手", "area": "青羊", "cuisine": "成都小吃", "avg_cost_cny": 35}
+    ],
+    "daily_cost": {"lodging_cny": 380, "food_cny": 180, "local_transport_cny": 40}
+  },
+  {
+    "city": "三亚",
+    "aliases": ["Sanya"],
+    "attractions": [
+      {"name": "亚龙湾", "area": "吉阳", "ticket_cny": 0, "tags": ["海滩", "休闲"]},
+      {"name": "蜈支洲岛", "area": "海棠", "ticket_cny": 144, "tags": ["海岛", "水上活动"]},
+      {"name": "南山文化旅游区", "area": "崖州", "ticket_cny": 129, "tags": ["文化", "海景"]},
+      {"name": "鹿回头风景区", "area": "吉阳", "ticket_cny": 35, "tags": ["夜景", "城市"]},
+      {"name": "椰梦长廊", "area": "天涯", "ticket_cny": 0, "tags": ["海滩", "日落"]}
+    ],
+    "restaurants": [
+      {"name": "琼乡阁", "area": "吉阳", "cuisine": "海南菜", "avg_cost_cny": 120},
+      {"name": "阿浪海鲜", "area": "天涯", "cuisine": "海鲜", "avg_cost_cny": 180},
+      {"name": "文昌小老弟糟粕醋", "area": "吉阳", "cuisine": "海南火锅", "avg_cost_cny": 110}
+    ],
+    "daily_cost": {"lodging_cny": 680, "food_cny": 260, "local_transport_cny": 90}
+  }
+]

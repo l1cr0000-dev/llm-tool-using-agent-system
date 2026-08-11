@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from tool_agent.graph import build_graph, run_agent
-from tool_agent.llm import DeepSeekLLMClient, FakeLLMClient
+from tool_agent.llm import DeepSeekLLMClient, FakeLLMClient, HeuristicLLMClient
 from tool_agent.nodes import route_next_step
 from tool_agent.state import AgentState, PlanStep
 from tool_agent.tools.base import ToolResult
+from tool_agent.tools.registry import ToolRegistry
 
 
 def test_router_selects_weather_for_weather_step() -> None:
@@ -134,3 +135,12 @@ def test_deepseek_planner_uses_function_calling_and_normalises_plan() -> None:
         ("calculator", "计算表达式"),
         ("synthesize", "综合已有信息回答用户问题"),
     ]
+
+
+def test_offline_graph_routes_travel_request_to_transport_and_rag() -> None:
+    graph = build_graph(llm_client=HeuristicLLMClient(), tool_registry=ToolRegistry(allow_external_tools=False))
+
+    result = run_agent("旅游计划；出发地: 上海；目的地: 北京；天数: 3；偏好: 历史,美食", graph=graph, thread_id="travel")
+
+    assert [entry["tool"] for entry in result["tool_results"]] == ["transport_quote", "destination_guide"]
+    assert all(entry["ok"] for entry in result["tool_results"])

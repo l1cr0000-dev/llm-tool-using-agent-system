@@ -34,6 +34,8 @@ The graph state carries `question`, `plan`, `current_step`, `selected_tool`, `to
 - `knowledge_base`: local markdown/text keyword retrieval.
 - `get_time`: Python standard-library time lookup with common city-to-timezone mappings.
 - `get_weather`: Open-Meteo geocoding plus current weather forecast. It does not require an API key.
+- `transport_quote`: deterministic per-person route estimate with rail and flight options.
+- `destination_guide`: local travel RAG over destination attractions, restaurants, and cost baselines.
 
 ## Recovery
 

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import pytest
+from pathlib import Path
 
 from tool_agent.tools.calculator import CalculatorTool
 from tool_agent.tools.knowledge_base import KnowledgeBaseTool
 from tool_agent.tools.time_tool import TimeTool
+from tool_agent.tools.travel import DestinationGuideTool, TransportQuoteTool
 from tool_agent.tools.weather import WeatherTool
 
 
@@ -98,3 +100,24 @@ def test_weather_tool_reports_missing_location() -> None:
 
     assert result.ok is False
     assert "could not geocode" in result.error.lower()
+
+
+def test_destination_guide_retrieves_curated_rag_document() -> None:
+    guide_path = Path(__file__).resolve().parents[1] / "travel_kb" / "destinations.json"
+
+    result = DestinationGuideTool(guide_path).run("旅游计划；目的地: 北京；偏好: 历史,美食")
+
+    assert result.ok is True
+    assert result.data["destination"] == "北京"
+    assert result.data["source"] == "destinations.json"
+    assert any(item["name"] == "故宫博物院" for item in result.data["attractions"])
+
+
+def test_transport_quote_returns_comparable_options() -> None:
+    result = TransportQuoteTool().run("旅游计划；出发地: 上海；目的地: 北京")
+
+    assert result.ok is True
+    assert result.data["origin"] == "上海"
+    assert result.data["destination"] == "北京"
+    assert result.data["recommended"]["cost_cny"] > 0
+    assert {item["mode"] for item in result.data["options"]} == {"高铁二等座", "经济舱"}

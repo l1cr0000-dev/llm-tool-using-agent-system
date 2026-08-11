@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from tool_agent.graph import build_graph, run_agent, stream_agent
 from tool_agent.evaluation import build_report, evaluate_pipeline, load_cases, load_dify_records
 from tool_agent.llm import HeuristicLLMClient
+from tool_agent.travel import TravelPlanner, TravelRequest
 from tool_agent.tools.registry import ToolRegistry
 
 app = typer.Typer(help="Run the LangGraph LLM tool-using agent.")
@@ -80,6 +81,27 @@ def evaluate(
         output.write_text(payload + "\n", encoding="utf-8")
         typer.echo(f"Saved evaluation report to {output}")
     typer.echo(payload)
+
+
+@app.command("travel")
+def travel(
+    origin: Annotated[str, typer.Argument(help="Departure city, for example Shanghai.")],
+    destination: Annotated[str, typer.Argument(help="Destination city, for example Beijing.")],
+    days: Annotated[int, typer.Option(min=1, max=14, help="Number of travel days.")] = 3,
+    budget: Annotated[int | None, typer.Option(min=1, help="Optional per-person budget in CNY.")] = None,
+    interests: Annotated[str, typer.Option(help="Comma-separated interests, for example 历史,美食.")] = "",
+    offline: Annotated[bool, typer.Option(help="Use local travel RAG data and deterministic planning.")] = False,
+) -> None:
+    """Create a day-by-day travel itinerary with transport, food, and costs."""
+    load_dotenv()
+    request = TravelRequest(
+        origin=origin,
+        destination=destination,
+        days=days,
+        budget_cny=budget,
+        interests=tuple(item.strip() for item in interests.replace("，", ",").split(",") if item.strip()),
+    )
+    typer.echo(TravelPlanner(graph=_build_graph(offline)).create_plan(request))
 
 
 def _build_graph(offline: bool):

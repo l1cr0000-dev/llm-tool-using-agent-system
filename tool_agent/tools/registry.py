@@ -7,6 +7,7 @@ from tool_agent.tools.base import AgentTool, ToolResult
 from tool_agent.tools.calculator import CalculatorTool
 from tool_agent.tools.knowledge_base import KnowledgeBaseTool
 from tool_agent.tools.time_tool import TimeTool
+from tool_agent.tools.travel import DestinationGuideTool, TransportQuoteTool
 from tool_agent.tools.weather import WeatherTool
 from tool_agent.tools.web_search import TavilyClient, WebSearchTool
 
@@ -23,6 +24,8 @@ class ToolRegistry:
                 WebSearchTool(web_client),
                 CalculatorTool(),
                 KnowledgeBaseTool(project_root / "sample_kb"),
+                TransportQuoteTool(),
+                DestinationGuideTool(project_root / "travel_kb" / "destinations.json"),
                 TimeTool(),
                 WeatherTool(),
             ]

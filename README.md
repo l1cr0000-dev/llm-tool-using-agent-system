@@ -6,6 +6,7 @@
 
 - LangGraph `StateGraph` 编排：planner、router、execute_tool、recover、synthesizer；DeepSeek Planner 使用 Function Calling 生成受 JSON Schema 约束的执行计划。
 - 多工具路由：web search、calculator、knowledge base RAG、time、weather。
+- 旅行编排 Agent：根据出发地、目的地、天数、预算和偏好，编排逐日景点、餐厅、交通方案与人均费用。
 - Working memory：每步工具调用都落成结构化记录，供后续步骤和最终综合使用。
 - Failure recovery：query rewrite、retry、语义安全的 fallback tool；没有可信 fallback 时显式跳过并在综合答案中说明缺失信息。
 - CLI trace：可以直接看到规划、工具选择、执行、恢复和最终答案。
@@ -47,6 +48,14 @@ python -m tool_agent run "LangGraph 和 Dify 的 agent 架构差异是什么？"
 ```bash
 tool-agent run "计算 (18 + 24) / 6，并解释结果"
 ```
+
+生成旅游计划（离线 RAG 演示支持北京、上海、杭州、成都、三亚）：
+
+```bash
+tool-agent travel 上海 北京 --days 3 --budget 4500 --interests 历史,美食 --offline
+```
+
+输出包含逐日景点与餐厅、交通备选、每人总预算及超支提醒。加入“最新”并配置 `TAVILY_API_KEY` 后，Planner 会额外调用 Web Search 补充实时信息。
 
 需要完全离线地演示主链路时，附加 `--offline`（使用启发式 planner，并禁用联网搜索凭据）：
 
@@ -106,6 +115,8 @@ flowchart LR
 
 更多说明见 `docs/architecture.md`。
 
+旅行 Agent 的工具、RAG 数据和费用计算规则见 `docs/travel-agent.md`。
+
 ## Test
 
 ```bash
@@ -131,3 +142,4 @@ GitHub Actions 会在 Python 3.11 和 3.12 上自动运行该测试套件。
 - Designed working memory and failure recovery with query rewrite, retry, and fallback tool routing.
 - Compared code-based LangGraph orchestration with a Dify low-code workflow DSL for architecture trade-off analysis.
 - Built a reproducible evaluation harness measuring task decomposition, tool-selection F1, execution stability, and estimated call cost, with categorized error analysis.
+- Extended the agent into a travel itinerary orchestrator that routes transport pricing and destination RAG, then produces day-by-day attraction, restaurant, and budget plans.

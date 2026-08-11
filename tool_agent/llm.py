@@ -10,7 +10,16 @@ from openai import OpenAI
 from tool_agent.state import PlanStep
 
 
-AVAILABLE_TOOLS = ("web_search", "calculator", "knowledge_base", "get_time", "get_weather", "synthesize")
+AVAILABLE_TOOLS = (
+    "web_search",
+    "calculator",
+    "knowledge_base",
+    "get_time",
+    "get_weather",
+    "transport_quote",
+    "destination_guide",
+    "synthesize",
+)
 PLAN_FUNCTION = {
     "type": "function",
     "function": {
@@ -84,6 +93,17 @@ class HeuristicLLMClient:
         # 这个 fallback 不追求智能，只保证没有 API key 时也能演示完整 pipeline。
         lowered = question.lower()
         steps: list[PlanStep] = []
+        if any(word in lowered or word in question for word in ["travel", "trip", "旅游", "旅行", "行程"]):
+            steps.extend(
+                [
+                    PlanStep(id=1, objective=question, tool="transport_quote"),
+                    PlanStep(id=2, objective=question, tool="destination_guide"),
+                ]
+            )
+            if any(word in lowered for word in ["latest", "search"]) or "最新" in question:
+                steps.append(PlanStep(id=3, objective=question, tool="web_search"))
+            steps.append(PlanStep(id=len(steps) + 1, objective="综合旅行信息生成行程", tool="synthesize"))
+            return steps
         if any(word in lowered or word in question for word in ["time", "时间", "几点", "当前"]):
             steps.append(PlanStep(id=len(steps) + 1, objective=self._location_objective(question, "获取当前时间"), tool="get_time"))
         if any(word in lowered or word in question for word in ["weather", "天气", "气温", "下雨"]):
@@ -140,7 +160,7 @@ class DeepSeekLLMClient:
         # 优先通过 Function Calling 返回受约束的计划；失败时兼容旧模型的 JSON 文本输出。
         prompt = (
             "你是任务规划器。把用户问题拆成最少必要步骤。"
-            "每步必须选择一个工具：web_search, calculator, knowledge_base, get_time, get_weather, synthesize。"
+            f"每步必须选择一个工具：{', '.join(AVAILABLE_TOOLS)}。"
             "最后一步必须是 synthesize；不要执行工具，只创建计划。"
         )
         try:
